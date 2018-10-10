@@ -3,7 +3,7 @@ use actix_web::ws::{Client, Message, ProtocolError};
 use futures::Future;
 
 struct MyActor {
-    handler: Box<Fn(String) -> () + 'static>,
+    handler: Box<Fn(String) + 'static>,
 }
 
 impl Actor for MyActor {
@@ -22,7 +22,7 @@ impl StreamHandler<Message, ProtocolError> for MyActor {
 }
 
 pub struct Event {
-    handler: Box<Fn(String) -> () + 'static>,
+    handler: Box<Fn(String) + 'static>,
 }
 
 pub struct EventManager {
@@ -37,7 +37,7 @@ impl EventManager {
 
     pub fn capture<F>(&mut self, function: F)
     where
-        F: for<'h> Fn(String) -> () + 'static
+        F: for<'h> Fn(String) + 'static
     {
         let event = Event { handler: Box::new(function), };
         self.events.push(event);
